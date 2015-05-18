@@ -24,19 +24,12 @@ module.exports = function(grunt) {
         files: ['*.js', '*.jsx'],
         tasks: ['default']
       },
-    },
-    //copy:{ main : {
-    //    file: [
-    //      {expand: true, src :['src/**/*'], dest: 'dest/'}
-    //    ]
-    //  }
-    //}
+    }
   });
 
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-react');
-  //grunt.loadNpmTasks('grunt-contrib-copy');
 
   grunt.registerTask('default', ['react', 'browserify']);
 
