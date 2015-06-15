@@ -1,1 +1,1 @@
-require('./commentbox.jsx');
+require('./commentbox.js');

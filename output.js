@@ -2,29 +2,76 @@
 /**
  *  @jsx React.DOM
  */
+'use strict';
 
 var React = require('react');
 
-var CommentBox = React.createClass({displayName: "CommentBox",
-  render: function() {
+var Card = React.createClass({displayName: "Card",
+  getInitialState: function(){
+    return {};
+  },
+  componentDidMount: function(){
+    var cardComponent = this;
+    $.get("https://api.github.com/users/" + this.props.login, function(data){
+      cardComponent.setState(data)
+    });
+  },
+  render: function(){
     return (
-      React.createElement("div", {className: "commentBox"}, 
-        "Hello, Doofus! I am a CommentBox."
+      React.createElement("div", null, 
+        React.createElement("img", {src: this.state.avatar_url, width: "80"}), 
+        React.createElement("h3", null, this.state.name), 
+        React.createElement("hr", null)
       )
-    );
+    )
   }
 });
-React.render(
-  React.createElement(CommentBox, null),
-  document.getElementById('container')
-);
 
-module.exports = CommentBox;
+var Form = React.createClass({displayName: "Form",
+  handleSubmit: function(e){
+    e.preventDefault();
+    var loginInput = React.findDOMNode(this.refs.login);
+    this.props.addCard(loginInput.value);
+    loginInput.value = ''
+  },
+  render: function(){
+    return (
+      React.createElement("form", {onSubmit: this.handleSubmit}, 
+        React.createElement("input", {placeholder: "github login", ref: "login"}), 
+        React.createElement("button", null, "Add")
+      )
+    )
+  }
+});
+
+var Main = React.createClass({displayName: "Main",
+  getInitialState: function(){
+    return {logins :[]}
+  },
+  addCard: function(loginToAdd){
+    this.setState({logins: this.state.logins.concat(loginToAdd)});
+  },
+  render: function(){
+    var cards = this.state.logins.map(function(login){
+      return (React.createElement(Card, {login: login}));
+    });
+    return (
+      React.createElement("div", null, 
+        React.createElement(Form, {addCard: this.addCard}), 
+        cards
+      )
+    )
+  }
+});
+
+React.render(React.createElement(Main, null), document.getElementById("container"));
+
+module.exports = Main;
 
 },{"react":158}],2:[function(require,module,exports){
-require('./commentbox.jsx');
+require('./commentbox.js');
 
-},{"./commentbox.jsx":1}],3:[function(require,module,exports){
+},{"./commentbox.js":1}],3:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
